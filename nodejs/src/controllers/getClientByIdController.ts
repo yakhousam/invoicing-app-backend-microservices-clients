@@ -1,4 +1,5 @@
 import { ddbDocClient, tableName } from "@/db/client";
+import { getUserId } from "@/utils";
 import { GetCommand } from "@aws-sdk/lib-dynamodb";
 import {
   type APIGatewayProxyEvent,
@@ -9,7 +10,7 @@ import createError from "http-errors";
 const getClientByIdController = async (
   event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
-  const userId = event.requestContext.authorizer?.jwt?.claims?.sub as string;
+  const userId = getUserId(event);
 
   const clientId = event.pathParameters?.clientId;
 

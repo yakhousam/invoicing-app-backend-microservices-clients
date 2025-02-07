@@ -1,4 +1,5 @@
 import { ddbDocClient, tableName } from "@/db/client";
+import { getUserId } from "@/utils";
 import { Client } from "@/validation";
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import middy from "@middy/core";
@@ -11,8 +12,7 @@ const emailDuplicationMiddleware = (): middy.MiddlewareObj<
 > => {
   return {
     before: async (request): Promise<void> => {
-      const userId = request.event.requestContext.authorizer?.jwt?.claims
-        ?.sub as string; // authorizeUserMiddleware will ensure that this is not undefined
+      const userId = getUserId(request.event);
       const body = request.event.body as unknown as Partial<Client>;
       const email = body.email as string;
       const clientId = request.event.pathParameters?.clientId as string;

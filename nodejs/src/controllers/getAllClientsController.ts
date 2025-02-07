@@ -1,12 +1,12 @@
 import { ddbDocClient, tableName } from "@/db/client";
+import { getUserId } from "@/utils";
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import createError from "http-errors";
 
 const getAllClientsController = async (
   event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
-  const userId = event.requestContext.authorizer?.jwt?.claims?.sub as string;
+  const userId = getUserId(event);
 
   let lastEvaluatedKey: Record<string, unknown> | undefined = undefined;
   const clients: Record<string, unknown>[] = [];
@@ -26,10 +26,6 @@ const getAllClientsController = async (
     }
     lastEvaluatedKey = data.LastEvaluatedKey;
   } while (lastEvaluatedKey);
-
-  if (clients.length === 0) {
-    throw new createError.NotFound("No clients found");
-  }
 
   const response = {
     clients,

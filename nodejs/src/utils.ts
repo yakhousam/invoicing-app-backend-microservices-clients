@@ -1,3 +1,13 @@
+import { type APIGatewayProxyEvent } from "aws-lambda";
+
+const isDev = process.env.NODE_ENV === "development";
+
+export function getUserId(event: APIGatewayProxyEvent): string {
+  return isDev
+    ? process.env.userId
+    : event.requestContext.authorizer?.jwt?.claims?.sub;
+}
+
 export function createUpdateExpression(
   updates: Record<string, string>,
 ): string {

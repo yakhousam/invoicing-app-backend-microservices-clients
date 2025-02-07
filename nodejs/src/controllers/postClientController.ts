@@ -1,4 +1,5 @@
 import { ddbDocClient, tableName } from "@/db/client";
+import { getUserId } from "@/utils";
 import { Client, createClientSchema } from "@/validation";
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import {
@@ -12,7 +13,7 @@ const postClientController = async (
   event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
   try {
-    const userId = event.requestContext.authorizer?.jwt?.claims?.sub as string; // authorizeUserMiddleware will ensure that this is not undefined
+    const userId = getUserId(event);
 
     const validateBody = createClientSchema.parse(event.body);
 

@@ -26,6 +26,7 @@ Globals:
         TABLE_NAME: !Ref TableName
         ENDPOINT_OVERRIDE: ""
         userId: ""
+        NODE_ENV: "production"
 
 Resources:
   HttpApi:
@@ -35,7 +36,7 @@ Resources:
         DefaultAuthorizer: GeneralAuth
         Authorizers:
           GeneralAuth:
-            IdentitySource: "$request.header.Authorization"
+            IdentitySource: $request.header.Authorization
             JwtConfiguration:
               audience:
                 - !Ref UserPoolClientId
@@ -48,9 +49,9 @@ Resources:
           - PATCH
           - DELETE
         AllowOrigins:
-          - "http://localhost:3001"
-          - "https://yakhousam-invoicing-app.netlify.app"
-          - "https://invoicing-app.khoudiryaya.dev"
+          - http://localhost:3001
+          - https://yakhousam-invoicing-app.netlify.app
+          - https://invoicing-app.khoudiryaya.dev
         AllowHeaders:
           - Content-Type
           - Authorization
@@ -116,7 +117,7 @@ Resources:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
-        Target: "es2020"
+        Target: es2020
         Sourcemap: true
         EntryPoints:
           - functions/postClient.ts
@@ -141,7 +142,7 @@ Resources:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
-        Target: "es2020"
+        Target: es2020
         Sourcemap: true
         EntryPoints:
           - functions/getAllClients.ts
@@ -166,7 +167,7 @@ Resources:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
-        Target: "es2020"
+        Target: es2020
         Sourcemap: true
         EntryPoints:
           - functions/getClientById.ts
@@ -190,12 +191,12 @@ Resources:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
-        Target: "es2020"
+        Target: es2020
         Sourcemap: true
         EntryPoints:
           - functions/updateClient.ts
 
 Outputs:
   HttpApi:
-    Description: "API Gateway endpoint URL for Prod stage"
-    Value: !Sub "https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com/"
+    Description: API Gateway endpoint URL for Prod stage
+    Value: !Sub https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com/

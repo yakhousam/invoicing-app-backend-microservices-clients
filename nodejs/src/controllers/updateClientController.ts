@@ -2,6 +2,7 @@ import { ddbDocClient, tableName } from "@/db/client";
 import {
   createExpressionAttributeValues,
   createUpdateExpression,
+  getUserId,
 } from "@/utils";
 import { updateClientSchema } from "@/validation";
 import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
@@ -17,7 +18,7 @@ const updateClientController = async (
   event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
   try {
-    const userId = event.requestContext.authorizer?.jwt.claims.sub as string;
+    const userId = getUserId(event);
     const clientId = event.pathParameters?.clientId as string;
 
     const updates = updateClientSchema.parse(event.body);

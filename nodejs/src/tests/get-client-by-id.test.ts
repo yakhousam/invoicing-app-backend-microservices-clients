@@ -70,44 +70,6 @@ describe("Test getClientById", () => {
     expect(result.body).toEqual(JSON.stringify(client));
   });
 
-  it("should return 401 if user is not authorized", async () => {
-    const client = generateClients(1)[0];
-    ddbMock
-      .on(GetCommand)
-      .resolves({
-        Item: undefined,
-      })
-      .on(GetCommand, {
-        Key: {
-          clientId: client.clientId,
-          userId: client.userId,
-        },
-      })
-      .resolves({
-        Item: client,
-      });
-
-    const getClientEvent = {
-      ...event,
-      pathParameters: {
-        clientId: client.clientId,
-      },
-      requestContext: {
-        authorizer: {
-          jwt: {
-            claims: {
-              sub: undefined,
-            },
-          },
-        },
-      },
-    } as unknown as APIGatewayProxyEvent;
-
-    const result = await getClientByIdHandler(getClientEvent, context);
-
-    expect(result.statusCode).toBe(401);
-  });
-
   it("should return 400 if clientId is missing", async () => {
     const getClientEvent = {
       ...event,

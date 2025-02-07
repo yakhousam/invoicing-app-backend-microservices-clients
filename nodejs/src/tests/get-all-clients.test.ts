@@ -63,38 +63,6 @@ describe("Test getAllClients", () => {
     );
   });
 
-  it("should return 404 if no clients are found", async () => {
-    const userId = generateUserId();
-
-    ddbMock
-      .on(QueryCommand, {
-        KeyConditionExpression: "userId = :userId",
-        ExpressionAttributeValues: {
-          ":userId": userId,
-        },
-      })
-      .resolves({
-        Items: undefined,
-      });
-
-    const getAllClientsEvent = {
-      ...event,
-      requestContext: {
-        authorizer: {
-          jwt: {
-            claims: {
-              sub: userId,
-            },
-          },
-        },
-      },
-    } as unknown as APIGatewayProxyEvent;
-
-    const result = await getAllClientsHandler(getAllClientsEvent, context);
-
-    expect(result.statusCode).toBe(404);
-  });
-
   it("should handle pagination correctly", async () => {
     const userId = generateUserId();
     const clients = generateClients(20).map((client) => ({
